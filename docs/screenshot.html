@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+  Source of docs/screenshot.png (an illustrative mockup, not a real session).
+  Render from the repository root (Chrome or Chromium, transparent background, 2x):
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+      --default-background-color=00000000 --force-device-scale-factor=2 --window-size=960,800 \
+      --screenshot=docs/screenshot.png "file://$PWD/docs/screenshot.html"
+  Keep --window-size in sync with the page size (body is 960px wide; height = content height).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>session-reader screenshot</title>
+<style>
+  :root {
+    --bg: #15161e;
+    --bar: #1d1e28;
+    --line: #2a2c3a;
+    --text: #c8d0f0;
+    --strong: #eef1ff;
+    --muted: #8189ad;
+    --faint: #5a6080;
+    --blue: #82a5f7;
+    --green: #9ece6a;
+    --amber: #e0af68;
+    --user-bg: #232534;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: transparent; }
+  body {
+    width: 960px;
+    padding: 36px 40px 56px;
+    font: 14px/1.62 ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .window {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg);
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+      0 22px 44px -10px rgba(0, 0, 0, 0.42),
+      0 8px 18px -6px rgba(0, 0, 0, 0.28);
+  }
+  .bar {
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: var(--bar);
+    border-bottom: 1px solid var(--line);
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+  .title {
+    position: absolute; left: 0; right: 0; text-align: center;
+    font-size: 12.5px; color: var(--muted); pointer-events: none;
+  }
+  .term { padding: 20px 24px 22px; }
+  .user {
+    background: var(--user-bg);
+    border-radius: 6px;
+    padding: 7px 12px;
+    color: var(--strong);
+    margin-bottom: 16px;
+  }
+  .user b { color: var(--blue); font-weight: 600; margin-right: 8px; }
+  .step { display: grid; grid-template-columns: 22px 1fr; margin-bottom: 14px; }
+  .bullet { color: var(--green); }
+  .bullet.say { color: var(--strong); }
+  .tool { color: var(--strong); font-weight: 600; }
+  .tool span { color: var(--muted); font-weight: 400; }
+  .cmd { color: var(--muted); }
+  .out { color: var(--faint); }
+  .out em { color: var(--muted); font-style: normal; }
+  .answer p { color: var(--strong); margin-bottom: 10px; }
+  .answer h4 { color: var(--amber); font-weight: 600; margin-top: 8px; }
+  .answer ul { list-style: none; }
+  .answer li { padding-left: 18px; position: relative; }
+  .answer li::before { content: "•"; position: absolute; left: 4px; color: var(--faint); }
+  .answer code { color: var(--blue); }
+  .ref { color: var(--amber); }
+  .input {
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--strong);
+  }
+  .input b { color: var(--blue); font-weight: 600; margin-right: 8px; }
+  .cursor {
+    display: inline-block; width: 8px; height: 17px; margin-left: 2px;
+    vertical-align: -3px; background: var(--text); opacity: 0.85;
+  }
+</style>
+</head>
+<body>
+  <div class="window">
+    <div class="bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <div class="title">~/projects/shop-api — claude</div>
+    </div>
+    <div class="term">
+      <div class="user"><b>&gt;</b>What did AGY and I work on last time in this project?</div>
+
+      <div class="step">
+        <span class="bullet">●</span>
+        <div>
+          <div class="tool">Skill <span>session-reader</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="bullet">●</span>
+        <div>
+          <div class="tool">Bash</div>
+          <div class="cmd">python3 scripts/session_reader.py --agent agy --latest --project .</div>
+          <div class="out">└ <em># Add Redis cache to product API</em> · Antigravity · 3f2a9c1e · yesterday 16:42 · 8 turns</div>
+        </div>
+      </div>
+
+      <div class="step answer">
+        <span class="bullet say">●</span>
+        <div>
+          <p>Your last Antigravity session (yesterday, 16:42) added a Redis cache to the product API.</p>
+          <h4>Decided</h4>
+          <ul>
+            <li>Cache <code>GET /products</code> and <code>/products/:id</code> for 5 minutes</li>
+            <li>Invalidate the cache on every write in <code>ProductService</code></li>
+          </ul>
+          <h4>Done</h4>
+          <ul>
+            <li><code>src/cache/redis.ts</code> and the cache middleware, with tests</li>
+          </ul>
+          <h4>Still open</h4>
+          <ul>
+            <li>A lock against cache stampedes: suggested in turn <span class="ref">[6]</span>, never built</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="user"><b>&gt;</b>Continue with the stampede lock.</div>
+
+      <div class="step">
+        <span class="bullet">●</span>
+        <div>
+          <div class="tool">Read <span>src/cache/redis.ts</span></div>
+        </div>
+      </div>
+
+      <div class="input"><b>&gt;</b><span class="cursor"></span></div>
+    </div>
+  </div>
+  <script>document.documentElement.dataset.height = Math.ceil(document.body.getBoundingClientRect().height);</script>
+</body>
+</html>

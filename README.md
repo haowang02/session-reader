@@ -3,6 +3,13 @@
 Let your coding agent read your past sessions with **Claude Code, Codex, OpenCode and Antigravity (agy)**.
 You can pick up where another agent left off, review what was decided, or find out what actually ran.
 
+<p align="center">
+  <img src="docs/screenshot.png" width="820"
+       alt="Claude Code uses session-reader to recap the previous Antigravity session in the same project, then continues the open task">
+</p>
+
+Other things you can ask:
+
 ```text
 > What did AGY and I talk about last time?
 > Why did Codex suggest SQLite in the session yesterday?
