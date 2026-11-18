@@ -251,8 +251,11 @@ def read_bytes(path) -> bytes:
     return data
 
 
-def read_head(path, n: int = 262144) -> bytes:
-    """First n decompressed bytes, without decompressing a whole .zst file when avoidable."""
+def read_head(path, n: int = 256 * 1024) -> bytes:
+    """First n decompressed bytes, without decompressing a whole .zst file when avoidable.
+
+    256 KiB holds a Codex session_meta line, which embeds the full base instructions (~20-60 KiB).
+    """
     with open(path, "rb") as f:
         data = f.read(n)
     if data[:4] != ZSTD_MAGIC:
@@ -431,8 +434,11 @@ def _pb_value(v: bytes, depth: int):
     except UnicodeDecodeError:
         s = None
     text_like = s is not None and _looks_text(s)
-    # A printable string is only reinterpreted as a message when it starts like a
-    # low-numbered varint/bytes field and parses cleanly (e.g. {12: "file:///..."}).
+    # Bytes are ambiguous without a schema: the same payload may be a string or a nested message.
+    # Real Antigravity messages nest < 15 levels and use field numbers < 200, so the limits below
+    # (depth 40, field 1000) only reject text that happens to parse as protobuf. A printable
+    # string is reinterpreted as a message only when it starts like a low-numbered (<= 32)
+    # varint/bytes field and parses cleanly, e.g. {12: "file:///..."}.
     try_msg = depth < 40 and (not text_like or (len(v) >= 3 and v[0] < 0x80 and (v[0] & 7) in (0, 2) and v[0] >> 3 <= 32))
     if try_msg:
         try:
@@ -522,6 +528,11 @@ def _block_text(content) -> str:
 
 
 def _head_tail_records(path: Path, size: int, chunk: int = 192 * 1024):
+    """Records from the start (cwd, first prompt) and end (latest title) of a transcript.
+
+    Listing must not read whole transcripts (they reach tens of MB); 192 KiB at each end covers the
+    early metadata records and the periodically re-written title records.
+    """
     with open(path, "rb") as f:
         head = f.read(chunk)
         tail = b""
@@ -1553,7 +1564,9 @@ def pick_session(args, agents) -> Session:
                                                     if getattr(args, k)]
         raise ReaderError(f"no session found ({', '.join(filters)}); try --list or --all")
     fallback = None
-    for info in cands[:10]:  # storage metadata cannot always tell that a session is empty
+    # Storage metadata cannot always tell that a session is empty (e.g. opened and closed without a
+    # prompt), so load candidates until one has dialogue; 10 bounds the cost of a run of empty ones.
+    for info in cands[:10]:
         try:
             s = load(info)
         except ReaderError as e:

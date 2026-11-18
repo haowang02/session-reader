@@ -1,7 +1,7 @@
 {
   "name": "session-reader",
-  "version": "1.0.0",
-  "description": "Read, list and export local session history of Claude Code, Codex, OpenCode and Antigravity (agy): visible dialogue as Markdown, or the full record (thinking, tool calls, results) as JSON.",
+  "version": "1.0.1",
+  "description": "Reads, lists and exports local session history of Claude Code, Codex, OpenCode and Antigravity (agy): visible dialogue as Markdown, or the full record (thinking, tool calls, results) as JSON.",
   "author": {
     "name": "haowang02",
     "url": "https://github.com/haowang02"

@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "Session Reader skill for coding agents",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "plugins": [
     {
       "name": "session-reader",
       "source": "./",
-      "description": "Read, list and export local session history of Claude Code, Codex, OpenCode and Antigravity (agy): visible dialogue as Markdown, or the full record (thinking, tool calls, results) as JSON.",
-      "version": "1.0.0",
+      "description": "Reads, lists and exports local session history of Claude Code, Codex, OpenCode and Antigravity (agy): visible dialogue as Markdown, or the full record (thinking, tool calls, results) as JSON.",
+      "version": "1.0.1",
       "category": "productivity",
       "homepage": "https://github.com/haowang02/session-reader"
     }
